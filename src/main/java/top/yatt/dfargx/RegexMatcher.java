@@ -13,7 +13,23 @@ public class RegexMatcher {
     private int rs;
     private boolean[] fs;
 
-    public RegexMatcher(String regex) {
+  public int[][] getTransitionTable() {
+    return transitionTable;
+  }
+
+  public int getIs() {
+    return is;
+  }
+
+  public int getRs() {
+    return rs;
+  }
+
+  public boolean[] getFs() {
+    return fs;
+  }
+
+  public RegexMatcher(String regex) {
         compile(regex);
     }
 
@@ -38,4 +54,6 @@ public class RegexMatcher {
         }
         return fs[s];
     }
+
+
 }
