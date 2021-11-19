@@ -112,7 +112,7 @@ public class Main {
     pw.println("int main(int argc, char* argv[]) {");
     pw.println("  int result = -1;");
     pw.println("  int idx = 0;");
-    pw.println("  char c;");
+    pw.println("  int c;");
     pw.println("  std::string str(argv[1]);");
   }
 
@@ -145,9 +145,10 @@ public class Main {
     pw.println("       return 0;");
     pw.println("    }");
 
-    pw.println("    c = str[idx++];");
+    pw.println("    c = (int)(str[idx++]);");
     for (Map.Entry<Character, Integer> entry : stateMap.entrySet()) {
-      pw.println("    if (c == '" + entry.getKey() + "') {");
+      int v = (int) entry.getKey();
+      pw.println("    if (c == " + v + ") {");
       pw.println("      goto state" + entry.getValue() + ";");
       pw.println("    }");
     }
@@ -157,7 +158,10 @@ public class Main {
   }
 
   private static PrintWriter getWriter(String filename) throws IOException {
-    File file = new File("./out/" + filename + ".cpp");
+    String s = filename.replace("\\", "");
+    System.out.println(s);
+
+    File file = new File("./out/" + s + ".cpp");
 
     if (!file.exists()) {
       file.createNewFile();
@@ -189,7 +193,6 @@ public class Main {
 
     // headers
     generateHeaders(pw, regex);
-
     // generate initial state
     int is = matcher.getIs();
     boolean[] fs = matcher.getFs();

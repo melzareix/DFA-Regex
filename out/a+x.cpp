@@ -8,15 +8,24 @@
 int main(int argc, char* argv[]) {
   int result = -1;
   int idx = 0;
-  char c;
+  int c;
   std::string str(argv[1]);
+  int s = 3;
+  while (true) {
+    if (str.size() <= idx) {
+         std::cout << "Input ended before a match is found." << std::endl;
+         return 0;
+    }
+
+    if (c == 97) {}
+  }
   state3:
     if (str.size() <= idx) {
        std::cout << "Input ended before a match is found." << std::endl;
        return 0;
     }
-    c = str[idx++];
-    if (c == 'a') {
+    c = (int)(str[idx++]);
+    if (c == 97) {
       goto state2;
     }
     goto state1;
@@ -30,11 +39,11 @@ int main(int argc, char* argv[]) {
        std::cout << "Input ended before a match is found." << std::endl;
        return 0;
     }
-    c = str[idx++];
-    if (c == 'a') {
+    c = (int)(str[idx++]);
+    if (c == 97) {
       goto state2;
     }
-    if (c == 'x') {
+    if (c == 120) {
       goto state0;
     }
     goto state1;
