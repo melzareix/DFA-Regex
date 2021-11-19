@@ -28,25 +28,26 @@ public class Main {
     pw.println();
 
     pw.println("int main(int argc, char* argv[]) {");
-    pw.println("\tint is = " + matcher.getIs() + ";");
-    pw.println("\tint rs = " + matcher.getRs() + ";");
-    pw.print("\tbool fs[" + matcher.getFs().length + "] = {");
+    pw.println("  int is = " + matcher.getIs() + ";");
+    pw.println("  int rs = " + matcher.getRs() + ";");
+    pw.print("  bool fs[" + matcher.getFs().length + "] = {");
     for (boolean v : matcher.getFs()) {
       pw.print(v + ",");
     }
     pw.println("};");
 
-    pw.println("\tint tt[" + matcher.getTransitionTable().length + "][" + matcher.getTransitionTable()[0].length + "] = {");
-    for (int[] row: matcher.getTransitionTable()) {
-      pw.print("\t\t{");
-      for (int e: row) {
-        pw.print( e + ",") ;
+    pw.println("  int tt[" + matcher.getTransitionTable().length + "]["
+      + matcher.getTransitionTable()[0].length + "] = {");
+    for (int[] row : matcher.getTransitionTable()) {
+      pw.print("    {");
+      for (int e : row) {
+        pw.print(e + ",");
       }
       pw.println("},");
     }
-    pw.println("\t};");
+    pw.println("  };");
 
-    pw.println("\tstd::string str(argv[1]);");
+    pw.println("  std::string str(argv[1]);");
 
     // full matcher code
 //    pw.println("int s = is;");
@@ -66,35 +67,35 @@ public class Main {
 //    pw.println("}");
 
     // check all parts of string
-    pw.println("\tint start_pos = 0;");
+    pw.println("  int start_pos = 0;");
 
     // start while
-    pw.println("\twhile (start_pos < str.size()) {");
-    pw.println("\t\tint s = is;");
+    pw.println("  while (start_pos < str.size()) {");
+    pw.println("    int s = is;");
 
     // start for
-    pw.println("\t\tfor (int i = start_pos; i < str.size(); i++) {");
-    pw.println("\t\t\ts = tt[s][(int)(str[i])];");
+    pw.println("    for (int i = start_pos; i < str.size(); i++) {");
+    pw.println("      s = tt[s][(int)(str[i])];");
 
     // start if
-    pw.println("\t\t\tif (s == rs) {");
-    pw.println("\t\t\t\tbreak;");
-    pw.println("\t\t\t} else if (fs[s]) {");
-    pw.println("\t\t\t\tstd::cout << \"Success!\" << std::endl;");
-    pw.println("\t\t\t\treturn 0;");
+    pw.println("      if (s == rs) {");
+    pw.println("        break;");
+    pw.println("      } else if (fs[s]) {");
+    pw.println("        std::cout << \"Success!\" << std::endl;");
+    pw.println("        return 0;");
     // end if
-    pw.println("\t\t\t}");
+    pw.println("      }");
 
     // end for
-    pw.println("\t\t}");
-    pw.println("\t\tstart_pos++;");
+    pw.println("    }");
+    pw.println("    start_pos++;");
 
     // end while
-    pw.println("\t}");
+    pw.println("  }");
 
-    pw.println("\tstd::cout << \"Failed\" << std::endl;");
-    pw.println("\treturn 0;");
-    pw.println("\t}");
+    pw.println("  std::cout << \"Failed\" << std::endl;");
+    pw.println("  return 0;");
+    pw.println("  }");
 
     pw.flush();
   }
@@ -109,10 +110,10 @@ public class Main {
     pw.println();
 
     pw.println("int main(int argc, char* argv[]) {");
-    pw.println("\tint result = -1;");
-    pw.println("\tint idx = 0;");
-    pw.println("\tchar c;");
-    pw.println("\tstd::string str(argv[1]);");
+    pw.println("  int result = -1;");
+    pw.println("  int idx = 0;");
+    pw.println("  char c;");
+    pw.println("  std::string str(argv[1]);");
   }
 
   private static void generateFooter(PrintWriter pw) {
@@ -122,37 +123,37 @@ public class Main {
 
   private static void generateState(Map<Character, Integer> stateMap, int state, boolean[] fs,
     int rs, PrintWriter pw) {
-    pw.println("\tstate" + state + ":");
+    pw.println("  state" + state + ":");
 
     if (fs[state]) {
-      pw.println("\t\t// final state");
-      pw.println("\t\tresult = idx;");
-      pw.println("\t\tstd::cout << \"Found starting at:\" << result << std::endl;");
-      pw.println("\t\treturn 0;");
+      pw.println("    // final state");
+      pw.println("    result = idx;");
+      pw.println("    std::cout << \"Found starting at:\" << result << std::endl;");
+      pw.println("    return 0;");
       return;
     }
 
     if (state == rs) {
-      pw.println("\t\t// reject state");
-      pw.println("\t\tstd::cout << \"Failed to match:\" << result << std::endl;");
-      pw.println("\t\treturn 0;");
+      pw.println("    // reject state");
+      pw.println("    std::cout << \"Failed to match:\" << result << std::endl;");
+      pw.println("    return 0;");
       return;
     }
     // boundary check
-    pw.println("\t\tif (str.size() <= idx) {");
-    pw.println("\t\t\t std::cout << result << std::endl;");
-    pw.println("\t\t\t return 0;");
-    pw.println("\t\t}");
+    pw.println("    if (str.size() <= idx) {");
+    pw.println("       std::cout << result << std::endl;");
+    pw.println("       return 0;");
+    pw.println("    }");
 
-    pw.println("\t\tc = str[idx++];");
+    pw.println("    c = str[idx++];");
     for (Map.Entry<Character, Integer> entry : stateMap.entrySet()) {
-      pw.println("\t\tif (c == '" + entry.getKey() + "') {");
-      pw.println("\t\t\tgoto state" + entry.getValue() + ";");
-      pw.println("\t\t}");
+      pw.println("    if (c == '" + entry.getKey() + "') {");
+      pw.println("      goto state" + entry.getValue() + ";");
+      pw.println("    }");
     }
 
     // no other condition matched
-    pw.println("\t\tgoto state" + rs + ";");
+    pw.println("    goto state" + rs + ";");
   }
 
   private static PrintWriter getWriter(String filename) throws IOException {
