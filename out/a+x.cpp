@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
   std::string str(argv[1]);
   state3:
     if (str.size() <= idx) {
-       std::cout << result << std::endl;
+       std::cout << "Input ended before a match is found." << std::endl;
        return 0;
     }
     c = str[idx++];
@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     return 0;
   state2:
     if (str.size() <= idx) {
-       std::cout << result << std::endl;
+       std::cout << "Input ended before a match is found." << std::endl;
        return 0;
     }
     c = str[idx++];

@@ -141,7 +141,7 @@ public class Main {
     }
     // boundary check
     pw.println("    if (str.size() <= idx) {");
-    pw.println("       std::cout << result << std::endl;");
+    pw.println("       std::cout << \"Input ended before a match is found.\" << std::endl;");
     pw.println("       return 0;");
     pw.println("    }");
 
