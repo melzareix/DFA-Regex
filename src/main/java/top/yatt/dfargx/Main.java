@@ -128,7 +128,7 @@ public class Main {
     if (fs[state]) {
       pw.println("    // final state");
       pw.println("    result = idx;");
-      pw.println("    std::cout << \"Found starting at:\" << result << std::endl;");
+      pw.println("    std::cout << \"Found ending at:\" << result << std::endl;");
       pw.println("    return 0;");
       return;
     }

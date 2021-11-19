@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
   state0:
     // final state
     result = idx;
-    std::cout << "Found starting at:" << result << std::endl;
+    std::cout << "Found ending at:" << result << std::endl;
     return 0;
   state2:
     if (str.size() <= idx) {
