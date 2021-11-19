@@ -1,14 +1,24 @@
 package top.yatt.dfargx.tree;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EmptyStackException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 import top.yatt.dfargx.stack.OperatingStack;
 import top.yatt.dfargx.stack.ShuntingStack;
-import top.yatt.dfargx.tree.node.*;
+import top.yatt.dfargx.tree.node.BConcat;
+import top.yatt.dfargx.tree.node.BMany;
+import top.yatt.dfargx.tree.node.BOr;
+import top.yatt.dfargx.tree.node.LChar;
+import top.yatt.dfargx.tree.node.LClosure;
+import top.yatt.dfargx.tree.node.LNull;
+import top.yatt.dfargx.tree.node.Node;
 import top.yatt.dfargx.tree.node.bracket.LeftBracket;
 import top.yatt.dfargx.tree.node.bracket.RightBracket;
 import top.yatt.dfargx.util.CommonSets;
 import top.yatt.dfargx.util.InvalidSyntaxException;
-
-import java.util.*;
 
 /**
  * Created on 2015/5/8.
@@ -282,15 +292,28 @@ public class SyntaxTree {
     }
 
 
-    private void tryConcat() {
-        if (itemTerminated) {
-            nodeList.add(new BConcat());
-            itemTerminated = false;
-        }
+  private void tryConcat() {
+    if (itemTerminated) {
+      nodeList.add(new BConcat());
+      itemTerminated = false;
     }
+  }
 
-    public Node getRoot() {
-        return root;
+  public Node getRoot() {
+    return root;
+  }
+
+  private String printTree(Node root) {
+    if (root == null) {
+      return null;
     }
+    String left = (root.hasLeft() ? printTree(root.left()) : " <NULL> ");
+    String right = (root.hasRight() ? printTree(root.right()) : " <NULL> ");
+    return left + " " + root + " " + right;
+  }
 
+  @Override
+  public String toString() {
+    return printTree(getRoot());
+  }
 }
