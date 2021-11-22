@@ -215,9 +215,16 @@ public class Main {
   public static void main(String[] args) throws IOException {
     Scanner sc = new Scanner(System.in);
     String regex = sc.nextLine();
-
+    // allow fast partial matching
+    // would be changed if we support lineStart and lineEnd.
+    boolean matchPartial = false;
+    if (matchPartial) {
+      regex = ".*(" + regex + ").*";
+    }
     RegexMatcher matcher = new RegexMatcher(regex);
     generateCode(matcher, regex);
+
+    System.out.println(matcher.match(sc.nextLine()));
 
   }
 }

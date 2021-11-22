@@ -10,15 +10,6 @@ int main(int argc, char* argv[]) {
   int idx = 0;
   int c;
   std::string str(argv[1]);
-  int s = 3;
-  while (true) {
-    if (str.size() <= idx) {
-         std::cout << "Input ended before a match is found." << std::endl;
-         return 0;
-    }
-
-    if (c == 97) {}
-  }
   state3:
     if (str.size() <= idx) {
        std::cout << "Input ended before a match is found." << std::endl;
