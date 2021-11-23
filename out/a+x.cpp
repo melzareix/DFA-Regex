@@ -4,16 +4,20 @@
 // #######################################################################
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <chrono>
+using namespace std::chrono;
 
-int main(int argc, char* argv[]) {
+bool traverse(std::string& str) {
   int result = -1;
   int idx = 0;
   int c;
-  std::string str(argv[1]);
+
   state3:
     if (str.size() <= idx) {
        std::cout << "Input ended before a match is found." << std::endl;
-       return 0;
+       return false;
     }
     c = (int)(str[idx++]);
     if (c == 97) goto state2;
@@ -22,11 +26,11 @@ int main(int argc, char* argv[]) {
     // final state
     result = idx;
     std::cout << "Found ending at:" << result << std::endl;
-    return 0;
+    return true;
   state2:
     if (str.size() <= idx) {
        std::cout << "Input ended before a match is found." << std::endl;
-       return 0;
+       return false;
     }
     c = (int)(str[idx++]);
     if (c == 97) goto state2;
@@ -35,5 +39,22 @@ int main(int argc, char* argv[]) {
   state1:
     // reject state
     std::cout << "Failed to match:" << result << std::endl;
-    return 0;
+    return false;
 }
+
+int main(int argc, char* argv[]) {
+  // load data
+  std::string str(argv[1]);
+  std::ifstream st(str);
+  std::stringstream buf;
+  buf << st.rdbuf();
+  str = buf.str();
+
+  auto start = high_resolution_clock::now();
+  int matched = traverse(str);
+  auto end = high_resolution_clock::now();
+  std::cout << "Matching Result: " << matched << std::endl;
+  auto dur = duration_cast<microseconds>(end - start);
+  std::cout << "TimeToExecute: " << dur.count() << " microseconds." << std::endl;
+}
+
