@@ -133,16 +133,24 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
-                    <logViolationsToConsole>true</logViolationsToConsole>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <sourceDirectories>
-                        <sourceDirectory>
-                            ${project.build.sourceDirectory}
-                        </sourceDirectory>
-                    </sourceDirectories>
+                  <configLocation>checkstyle.xml</configLocation>
+                  <logViolationsToConsole>true</logViolationsToConsole>
+                  <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                  <sourceDirectories>
+                    <sourceDirectory>
+                      ${project.build.sourceDirectory}
+                    </sourceDirectory>
+                  </sourceDirectories>
                 </configuration>
             </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <source>8</source>
+              <target>8</target>
+            </configuration>
+          </plugin>
         </plugins>
     </build>
 

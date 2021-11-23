@@ -16,9 +16,7 @@ int main(int argc, char* argv[]) {
        return 0;
     }
     c = (int)(str[idx++]);
-    if (c == 97) {
-      goto state2;
-    }
+    if (c == 97) goto state2;
     goto state1;
   state0:
     // final state
@@ -31,12 +29,8 @@ int main(int argc, char* argv[]) {
        return 0;
     }
     c = (int)(str[idx++]);
-    if (c == 97) {
-      goto state2;
-    }
-    if (c == 120) {
-      goto state0;
-    }
+    if (c == 97) goto state2;
+    if (c == 120) goto state0;
     goto state1;
   state1:
     // reject state

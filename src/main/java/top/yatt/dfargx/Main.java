@@ -4,13 +4,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
 
-  public static void generateCppCheckerCode(RegexMatcher matcher, String filename) throws IOException {
+  public static void generateCppCheckerCode(RegexMatcher matcher, String filename)
+    throws IOException {
     File file = new File("./out/" + filename + ".cpp");
 
     if (!file.exists()) {
@@ -121,7 +125,25 @@ public class Main {
     pw.flush();
   }
 
-  private static void generateState(Map<Character, Integer> stateMap, int state, boolean[] fs,
+  private static void groupByValue(Map<Integer, Integer> originalMap) {
+    Map<Integer, List<Integer>> resultMap = originalMap.entrySet().stream()
+      .collect(Collectors.groupingBy(Map.Entry::getValue,
+        Collectors.mapping(Map.Entry::getKey, Collectors.toList())));
+    resultMap.forEach((k, v) -> System.out.println(k + ":" + v.size()));
+  }
+
+  private static void genRange(PrintWriter pw, int startRange, int endRange, int v) {
+    if (endRange - startRange == 0) {
+      pw.print("    if (c == " + startRange + ") ");
+      pw.println("goto state" + v + ";");
+    } else {
+      // actual range
+      pw.print("    if (c >= " + startRange + " && c <= " + endRange + ") ");
+      pw.println("goto state" + v + ";");
+    }
+  }
+
+  private static void generateState(Map<Integer, Integer> stateMap, int state, boolean[] fs,
     int rs, PrintWriter pw) {
     pw.println("  state" + state + ":");
 
@@ -146,12 +168,43 @@ public class Main {
     pw.println("    }");
 
     pw.println("    c = (int)(str[idx++]);");
-    for (Map.Entry<Character, Integer> entry : stateMap.entrySet()) {
-      int v = (int) entry.getKey();
-      pw.println("    if (c == " + v + ") {");
-      pw.println("      goto state" + entry.getValue() + ";");
-      pw.println("    }");
+
+    int prev = -1;
+    int startRange = -1;
+    int endRange = -1;
+
+    Integer[] keys = stateMap.keySet().toArray(new Integer[0]);
+    Arrays.sort(keys);
+    System.out.println(state);
+    for (int i = 0; i < keys.length; i++) {
+      if (i == 0) {
+        startRange = endRange = keys[i];
+        prev = stateMap.get(startRange);
+        continue;
+      }
+      int key = keys[i];
+      int v = stateMap.get(key);
+      if (v == prev && (key == keys[i - 1] + 1)) {
+        endRange = key;
+      } else {
+        // new range print old range
+        System.out.println("RANGE DONE: " + startRange + " <> " + endRange + "-> GOTO: " + prev);
+        // single range
+        genRange(pw, startRange, endRange, prev);
+        startRange = endRange = key;
+      }
+      prev = v;
     }
+
+    System.out.println("FINAL RANGE DONE: " + startRange + " <> " + endRange + "-> GOTO: " + prev);
+    genRange(pw, startRange, endRange, prev);
+
+//    for (Map.Entry<Integer, Integer> entry : stateMap.entrySet()) {
+//      int v = entry.getKey();
+//      pw.println("    if (c == " + v + ") {");
+//      pw.println("      goto state" + entry.getValue() + ";");
+//      pw.println("    }");
+//    }
 
     // no other condition matched
     pw.println("    goto state" + rs + ";");
@@ -173,13 +226,13 @@ public class Main {
   private static void generateCode(RegexMatcher matcher, String regex) throws IOException {
     // convert transition table to hashmap
     // [state_id] -> {"char": to_state_id}
-    HashMap<Integer, Map<Character, Integer>> transitionMap = new HashMap<>();
+    HashMap<Integer, Map<Integer, Integer>> transitionMap = new HashMap<>();
     for (int i = 0; i < matcher.getTransitionTable().length; i++) {
       int[] stateTransition = matcher.getTransitionTable()[i];
-      HashMap<Character, Integer> stateTransitions = new HashMap<>();
+      HashMap<Integer, Integer> stateTransitions = new HashMap<>();
       for (int j = 0; j < stateTransition.length; j++) {
         if (stateTransition[j] != matcher.getRs()) {
-          stateTransitions.put((char) j, stateTransition[j]);
+          stateTransitions.put(j, stateTransition[j]);
         }
       }
 
@@ -214,17 +267,18 @@ public class Main {
 
   public static void main(String[] args) throws IOException {
     Scanner sc = new Scanner(System.in);
-    String regex = sc.nextLine();
+//    String regex = sc.nextLine();
+    String regex = "a+x";
     // allow fast partial matching
     // would be changed if we support lineStart and lineEnd.
     boolean matchPartial = false;
+//    boolean matchPartial = true;
     if (matchPartial) {
       regex = ".*(" + regex + ").*";
     }
     RegexMatcher matcher = new RegexMatcher(regex);
     generateCode(matcher, regex);
 
-    System.out.println(matcher.match(sc.nextLine()));
 
   }
 }
